@@ -1,44 +1,61 @@
----
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-# image will be published to ghcr.io/<user>/<name>
-name: template
-# description will be included in the image's metadata
-description: This is my personal OS image.
+name: Starfall OS
+description: Personal Build Utilizing Kinoite, Bazzite, and FOSS Principles
 
-# the base image to build on top of (FROM) and the version tag to use
-base-image: ghcr.io/ublue-os/silverblue-main
-image-version: 41 # latest is also supported if you want new updates ASAP
+# Use Kinoite as the base image
+base-image: ghcr.io/ublue-os/kinoite-main
+image-version: latest # Use "latest" for automatic updates
 
-# module configuration, executed in order
-# you can include multiple instances of the same module
 modules:
   - type: files
     files:
       - source: system
-        destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
+        destination: / # Copies files/system/* into the root folder
 
   - type: rpm-ostree
     repos:
-      - https://copr.fedorainfracloud.org/coprs/atim/starship/repo/fedora-%OS_VERSION%/atim-starship-fedora-%OS_VERSION%.repo
+      # Bazzite repository for gaming kernel and tools
+      - https://repo.bazzite.org/fedora/$releasever/x86_64/
+      # Zen Browser repository for lightweight browsing
+      - https://copr.fedorainfracloud.org/coprs/sneexy/zen-browser/repo/fedora-$OS_VERSION%/sneexy-zen-browser-fedora-$OS_VERSION%.repo
+
     install:
-      - micro
-      - starship
+      # KDE Plasma minimal setup (already included in Kinoite but can be customized)
+      - plasma-desktop
+      - dolphin
+      - konsole
+      
+      # Bazzite kernel and gaming tools for optimization
+      - kernel-bazzite
+      - vkBasalt
+      - mangohud
+      
+      # Zen Browser for lightweight browsing experience
+      - zen-browser
+      
     remove:
-      # example: removing firefox (in favor of the flatpak)
-      # "firefox" is the main package, "firefox-langpacks" is a dependency
+      # Remove unnecessary packages (example: Firefox)
       - firefox
-      - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
+      - firefox-langpacks
 
   - type: default-flatpaks
     notify: true # Send notification after install/uninstall is finished (true/false)
     system:
-      # If no repo information is specified, Flathub will be used by default
       install:
-        - org.mozilla.firefox
-        - org.gnome.Loupe
-      remove:
-        - org.gnome.eog
-    user: {} # Also add Flathub user repo, but no user packages
+        # Essential apps for ease of use and neurodivergent-friendly tools
+        - com.valvesoftware.Steam # Gaming platform
+        - net.lutris.Lutris # Game launcher/manager
+        - org.mozilla.Thunderbird # Email client (optional)
+        - org.freedesktop.Platform.VulkanLayer.MangoHud
 
-  - type: signing # this sets up the proper policy & signing files for signed images to work fully
+customizations:
+  accessibility:
+    enable-high-contrast: true # Enable high-contrast themes for accessibility
+    enable-screen-reader: true # Enable screen reader support
+
+files:
+  onboarding-guide.txt: /etc/skel/ # Add a simple onboarding guide for first-time users
+
+signing:
+  cosign-key: /path/to/cosign.key # Optional signing configuration for secure builds
 
