@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 name: Starfall OS
-description: Personal Build Utilizing Kinoite, Bazzite, and Proton Apps
+description: Personal Build Utilizing Kinoite, Bazzite, and Proton App Suite
 
 # Use Kinoite as the base image
 base-image: ghcr.io/ublue-os/kinoite-main
@@ -33,9 +33,11 @@ modules:
       # Zen Browser for lightweight browsing experience
       - zen-browser
       
-      # Proton App Suite (Mail, VPN, Pass)
+      # Proton App Suite (Mail, VPN, Calendar, Drive, Pass)
       - protonmail-desktop-beta.rpm
       - protonvpn-stable-release-1.0.3-1.noarch.rpm
+      - proton-calendar.rpm
+      - proton-drive.rpm
       - protonpass.rpm
       
     remove:
