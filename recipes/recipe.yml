@@ -52,15 +52,11 @@ modules:
         - com.valvesoftware.Steam # Gaming platform
         - net.lutris.Lutris # Game launcher/manager
         - org.freedesktop.Platform.VulkanLayer.MangoHud
+    user: {} # Also add Flathub user repo, but no user packages
 
 customizations:
   accessibility:
     enable-high-contrast: true # Enable high-contrast themes for accessibility
     enable-screen-reader: true # Enable screen reader support
 
-files:
-  onboarding-guide.txt: /etc/skel/ # Add a simple onboarding guide for first-time users
-
-signing:
-  cosign-key: /path/to/cosign.key # Optional signing configuration for secure builds
-
+  - type: signing # this sets up the proper policy & signing files for signed images to work fully
