@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 name: Starfall OS
-description: Personal Build Utilizing Kinoite, Bazzite, and FOSS Principles
+description: Personal Build Utilizing Kinoite, Bazzite, and Proton Apps
 
 # Use Kinoite as the base image
 base-image: ghcr.io/ublue-os/kinoite-main
@@ -33,10 +33,14 @@ modules:
       # Zen Browser for lightweight browsing experience
       - zen-browser
       
+      # Proton App Suite (Mail, VPN, Pass)
+      - protonmail-desktop-beta.rpm
+      - protonvpn-stable-release-1.0.3-1.noarch.rpm
+      - protonpass.rpm
+      
     remove:
-      # Remove unnecessary packages (example: Firefox)
-      - firefox
-      - firefox-langpacks
+      # Remove Thunderbird in favor of Proton Mail Suite
+      - thunderbird
 
   - type: default-flatpaks
     notify: true # Send notification after install/uninstall is finished (true/false)
@@ -45,7 +49,6 @@ modules:
         # Essential apps for ease of use and neurodivergent-friendly tools
         - com.valvesoftware.Steam # Gaming platform
         - net.lutris.Lutris # Game launcher/manager
-        - org.mozilla.Thunderbird # Email client (optional)
         - org.freedesktop.Platform.VulkanLayer.MangoHud
 
 customizations:
