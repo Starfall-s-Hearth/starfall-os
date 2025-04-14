@@ -52,11 +52,13 @@ modules:
         - com.valvesoftware.Steam # Gaming platform
         - net.lutris.Lutris # Game launcher/manager
         - org.freedesktop.Platform.VulkanLayer.MangoHud
-    user: {} # Also add Flathub user repo, but no user packages
+    user:
+      repo-url: https://dl.flathub.org/repo/flathub.flatpakrepo # Flathub URL for user-level Flatpaks
+      repo-name: flathub # Name of the Flatpak repository
 
-customizations:
-  accessibility:
-    enable-high-contrast: true # Enable high-contrast themes for accessibility
-    enable-screen-reader: true # Enable screen reader support
+signing:
+  type: signing # Sets up policy & signing files for signed images to work fully
 
-  - type: signing # this sets up the proper policy & signing files for signed images to work fully
+alt-tags:
+  - lightweight-kde-gaming-os
+
