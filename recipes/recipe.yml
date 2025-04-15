@@ -1,62 +1,43 @@
+---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-name: Starfall OS
-description: Personal Build Utilizing Kinoite, Bazzite, Proton App Suite, BleachBit, and Oculante
+# image will be published to ghcr.io/<user>/<name>
+name: template
+# description will be included in the image's metadata
+description: This is my personal OS image.
 
-# Use Kinoite as the base image
-base-image: ghcr.io/ublue-os/kinoite-main
-image-version: latest # Use "latest" for automatic updates
+# the base image to build on top of (FROM) and the version tag to use
+base-image: ghcr.io/ublue-os/silverblue-main
+image-version: 41 # latest is also supported if you want new updates ASAP
 
+# module configuration, executed in order
+# you can include multiple instances of the same module
 modules:
   - type: files
     files:
       - source: system
-        destination: / # Copies files/system/* into the root folder
+        destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
 
   - type: rpm-ostree
     repos:
-      # Bazzite repository for gaming kernel and tools
-      - https://repo.bazzite.org/fedora/$releasever/x86_64/
-      # Zen Browser repository for lightweight browsing
-      - https://copr.fedorainfracloud.org/coprs/sneexy/zen-browser/repo/fedora-$OS_VERSION%/sneexy-zen-browser-fedora-$OS_VERSION%.repo
-
+      - https://copr.fedorainfracloud.org/coprs/atim/starship/repo/fedora-%OS_VERSION%/atim-starship-fedora-%OS_VERSION%.repo
     install:
-      # KDE Plasma minimal setup (already included in Kinoite but can be customized)
-      - plasma-desktop
-      - dolphin
-      - konsole
-
-      # Bazzite kernel and gaming tools for optimization
-      - kernel-bazzite
-      - vkBasalt
-      - mangohud
-
-      # Zen Browser for lightweight browsing experience
-      - zen-browser
-
-      # Proton App Suite (Mail, VPN, Calendar, Drive, Pass)
-      - protonmail-desktop-beta.rpm
-      - protonvpn-stable-release-1.0.3-1.noarch.rpm
-      - proton-calendar.rpm
-      - proton-drive.rpm
-      - protonpass.rpm
-
+      - micro
+      - starship
     remove:
-      # Remove Thunderbird in favor of Proton Mail Suite
-      - thunderbird
+      # example: removing firefox (in favor of the flatpak)
+      # "firefox" is the main package, "firefox-langpacks" is a dependency
+      - firefox
+      - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
 
   - type: default-flatpaks
     notify: true # Send notification after install/uninstall is finished (true/false)
     system:
+      # If no repo information is specified, Flathub will be used by default
       install:
-        # Essential apps for ease of use and neurodivergent-friendly tools
-        - com.valvesoftware.Steam # Gaming platform
-        - net.lutris.Lutris # Game launcher/manager
-        - org.freedesktop.Platform.VulkanLayer.MangoHud
-        - net.bleachbit.bleachbit
-        - io.github.woelper.Oculante
+        - org.mozilla.firefox
+        - org.gnome.Loupe
+      remove:
+        - org.gnome.eog
+    user: {} # Also add Flathub user repo, but no user packages
 
-signing:
-  type: signing # Sets up policy & signing files for signed images to work fully
-
-alt-tags:
-  - lightweight-kde-gaming-os
+  - type: signing # this sets up the proper policy & signing files for signed images to work fully
